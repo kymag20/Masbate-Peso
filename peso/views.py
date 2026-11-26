@@ -701,3 +701,37 @@ class UserRejectView(LoginRequiredMixin, View):
     def get(self, request, pk):
         return self.post(request, pk)
 
+
+class HealthCheckView(View):
+    """
+    Safe diagnostic endpoint (no secrets exposed) to verify database connectivity on Vercel.
+    """
+    def get(self, request):
+        from django.http import JsonResponse
+        from django.db import connection
+        from django.conf import settings
+        from django.contrib.auth.models import User
+
+        db_engine = settings.DATABASES['default']['ENGINE']
+        is_postgres = 'postgresql' in db_engine
+        db_ok = False
+        user_count = None
+        error_msg = None
+
+        try:
+            with connection.cursor() as cursor:
+                cursor.execute("SELECT 1")
+            user_count = User.objects.count()
+            db_ok = True
+        except Exception as e:
+            error_msg = f"{type(e).__name__}: {str(e)}"
+
+        return JsonResponse({
+            'status': 'ok' if db_ok else 'error',
+            'database_backend': 'PostgreSQL (Supabase)' if is_postgres else 'SQLite (FALLBACK - DATABASE_URL not set!)',
+            'db_connected': db_ok,
+            'user_count': user_count,
+            'debug_mode': settings.DEBUG,
+            'error': error_msg,
+        }, status=200 if db_ok else 500)
+

@@ -19,11 +19,15 @@ from .views import (
     UserManagementView,
     UserApproveView,
     UserRejectView,
+    HealthCheckView,
 )
 
 app_name = 'database'
 
 urlpatterns = [
+    # Health check (safe diagnostics)
+    path('health/', HealthCheckView.as_view(), name='health_check'),
+
     # Dashboard & Reports
     path('', DashboardView.as_view(), name='dashboard'),
     path('dashboard/', DashboardView.as_view(), name='dashboard_alt'),
