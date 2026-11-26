@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ page_title|default:"Register Employer" }} &bull; PESO MASBATE{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-0" style="max-width: 960px; margin: 0 auto;">
+
+    <!-- Breadcrumb & Page Header -->
+    <div class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between mb-4 gap-2">
+        <div>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-1 small text-muted">
+                    <li class="breadcrumb-item"><a href="{% url 'database:dashboard' %}" class="text-decoration-none text-muted">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'database:employer_list' %}" class="text-decoration-none text-muted">Employers</a></li>
+                    <li class="breadcrumb-item active text-dark fw-semibold" aria-current="page">{% if is_create %}Register New{% else %}Edit Record{% endif %}</li>
+                </ol>
+            </nav>
+            <h4 class="fw-bold mb-0 text-dark tracking-tight" style="color: #0F172A;">
+                {% if is_create %}Register New Employer / Establishment{% else %}Edit Employer Record{% endif %}
+            </h4>
+        </div>
+        <div>
+            <a href="{% url 'database:employer_list' %}" class="btn btn-sm btn-light border px-3" style="border-radius: 12px;">
+                <i class="bi bi-arrow-left me-1"></i>Back to Masterlist
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Glass Form Card -->
+    <div class="card border-0 shadow-sm" style="border-radius: 20px; background-color: #FFFFFF; border: 1px solid #E2E8F0 !important;">
+        <!-- Card Header Banner -->
+        <div class="p-4 border-bottom d-flex align-items-center gap-3" style="background: linear-gradient(135deg, #F8FAFC 0%, #F1F5F9 100%); border-top-left-radius: 20px; border-top-right-radius: 20px;">
+            <div class="rounded-circle d-flex align-items-center justify-content-center text-white shadow-sm" style="width: 48px; height: 48px; background: linear-gradient(135deg, #F59E0B, #D97706); font-size: 1.3rem; flex-shrink: 0;">
+                <i class="bi bi-building-add"></i>
+            </div>
+            <div>
+                <h6 class="fw-bold mb-1 text-dark" style="font-size: 1.05rem;">Establishment Information Form</h6>
+                <p class="text-muted small mb-0">Record licensed commercial establishments and employers in Masbate. An official ID (<code>EMP-YYYYMM-XXXXX</code>) will be generated automatically.</p>
+            </div>
+        </div>
+
+        <!-- Form Body -->
+        <div class="p-4 p-md-5">
+            <form method="post" novalidate>
+                {% csrf_token %}
+
+                {% if form.errors %}
+                <div class="alert alert-danger shadow-sm rounded-3 py-2 px-3 mb-4" role="alert">
+                    <div class="fw-bold mb-1"><i class="bi bi-exclamation-triangle-fill me-1"></i>Please correct the following errors:</div>
+                    <ul class="mb-0 small ps-3">
+                        {% for field in form %}
+                            {% for error in field.errors %}
+                                <li><strong>{{ field.label }}:</strong> {{ error }}</li>
+                            {% endfor %}
+                        {% endfor %}
+                        {% for error in form.non_field_errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+
+                <div class="row g-3 mb-4">
+                    <div class="col-12 col-md-8">
+                        <label class="form-label small fw-semibold text-secondary">Employer / Company Name <span class="text-danger">*</span></label>
+                        {{ form.company_name }}
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <label class="form-label small fw-semibold text-secondary">Business Permit No.</label>
+                        {{ form.permit_no }}
+                    </div>
+
+                    <div class="col-12 col-md-4">
+                        <label class="form-label small fw-semibold text-secondary">Registration Date <span class="text-danger">*</span></label>
+                        {{ form.registration_date }}
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <label class="form-label small fw-semibold text-secondary">Industry</label>
+                        {{ form.industry }}
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <label class="form-label small fw-semibold text-secondary">Establishment Size</label>
+                        {{ form.establishment_size }}
+                    </div>
+
+                    <div class="col-12 col-md-4">
+                        <label class="form-label small fw-semibold text-secondary">Contact Person</label>
+                        {{ form.contact_person }}
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <label class="form-label small fw-semibold text-secondary">Position</label>
+                        {{ form.position }}
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <label class="form-label small fw-semibold text-secondary">Contact No.</label>
+                        {{ form.contact_no }}
+                    </div>
+
+                    <div class="col-12 col-md-6">
+                        <label class="form-label small fw-semibold text-secondary">Email Address</label>
+                        {{ form.email }}
+                    </div>
+                    <div class="col-12 col-md-3">
+                        <label class="form-label small fw-semibold text-secondary">Municipality / City <span class="text-danger">*</span></label>
+                        {{ form.municipality }}
+                    </div>
+                    <div class="col-12 col-md-3">
+                        <label class="form-label small fw-semibold text-secondary">Province <span class="text-danger">*</span></label>
+                        {{ form.province }}
+                    </div>
+
+                    <div class="col-12">
+                        <label class="form-label small fw-semibold text-secondary">Complete Address</label>
+                        {{ form.address }}
+                    </div>
+
+                    <div class="col-12 col-md-6">
+                        <label class="form-label small fw-semibold text-secondary">Status <span class="text-danger">*</span></label>
+                        {{ form.status }}
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <label class="form-label small fw-semibold text-secondary">Remarks</label>
+                        {{ form.remarks }}
+                    </div>
+                </div>
+
+                <!-- ACTION BUTTONS -->
+                <div class="pt-4 border-top d-flex flex-column flex-sm-row align-items-center justify-content-between gap-3">
+                    <a href="{% url 'database:employer_list' %}" class="btn btn-light border px-4" style="border-radius: 12px; font-weight: 500;">
+                        <i class="bi bi-x-circle me-1"></i>Cancel
+                    </a>
+                    <button type="submit" class="btn btn-teal px-5 py-2 shadow-sm d-flex align-items-center gap-2" style="border-radius: 12px; font-size: 0.95rem;">
+                        <i class="bi bi-check2-circle fs-5"></i>
+                        <span>Save Employer Record</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

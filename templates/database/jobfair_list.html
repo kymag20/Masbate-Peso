@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block page_title %}Job Fairs Monitoring{% endblock %}
+{% block page_subtitle %}Provincial and Municipal Employment Fairs, HOTS, and Placement Outcomes{% endblock %}
+
+{% block content %}
+<div class="card border-0 shadow-sm">
+    <div class="card-header bg-white py-3 px-4 d-flex justify-content-between align-items-center">
+        <h6 class="mb-0 fw-bold text-navy">Conducted & Planned Job Fairs</h6>
+        <a href="{% url 'admin:peso_jobfair_add' %}" target="_blank" class="btn btn-sm btn-navy d-flex align-items-center gap-1">
+            <i class="bi bi-calendar-plus"></i>
+            <span>Register Job Fair</span>
+        </a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-custom table-hover align-middle">
+            <thead>
+                <tr>
+                    <th>Event ID</th>
+                    <th>Date</th>
+                    <th>Event Name</th>
+                    <th>Venue</th>
+                    <th>Host PESO</th>
+                    <th class="text-center">Employers</th>
+                    <th class="text-center">Vacancies</th>
+                    <th class="text-center">HOTS</th>
+                    <th class="text-center">Total Hired</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for jf in job_fairs %}
+                <tr>
+                    <td class="fw-bold text-navy font-monospace small">{{ jf.job_fair_id }}</td>
+                    <td>{{ jf.event_date }}</td>
+                    <td>
+                        <div class="fw-bold text-navy">{{ jf.name }}</div>
+                        <small class="text-muted">Organizer: {{ jf.organizer }}</small>
+                    </td>
+                    <td>{{ jf.venue }}</td>
+                    <td><span class="badge bg-light text-navy border">{{ jf.peso_office.name }}</span></td>
+                    <td class="text-center fw-semibold">{{ jf.participating_employers }}</td>
+                    <td class="text-center fw-semibold text-primary">{{ jf.vacancies_offered }}</td>
+                    <td class="text-center"><span class="badge bg-amber-subtle text-amber border">{{ jf.hired_on_the_spot }}</span></td>
+                    <td class="text-center"><span class="badge bg-success-subtle text-success border fw-bold">{{ jf.total_hired }}</span></td>
+                    <td>
+                        {% if jf.status|lower == 'completed' %}
+                            <span class="badge bg-success-subtle text-success border border-success-subtle">Completed</span>
+                        {% elif jf.status|lower == 'planned' %}
+                            <span class="badge bg-primary-subtle text-primary border border-primary-subtle">Planned</span>
+                        {% else %}
+                            <span class="badge bg-secondary-subtle text-secondary">{{ jf.status }}</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="10" class="text-center py-5 text-muted">No job fairs recorded yet.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

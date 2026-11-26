@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block page_title %}Job Vacancies{% endblock %}
+{% block page_subtitle %}Active Employer Job Orders, Qualifications, and Hiring Demand{% endblock %}
+
+{% block content %}
+<div class="card border-0 shadow-sm">
+    <div class="card-header bg-white py-3 px-4 d-flex justify-content-between align-items-center">
+        <form method="get" class="d-flex align-items-center gap-2">
+            <div class="input-group input-group-sm" style="max-width: 320px;">
+                <span class="input-group-text bg-light border-end-0 text-muted"><i class="bi bi-search"></i></span>
+                <input type="text" name="q" value="{{ q }}" class="form-control bg-light border-start-0" placeholder="Search position or employer...">
+            </div>
+            {% if q %}
+            <a href="{% url 'database:vacancy_list' %}" class="btn btn-sm btn-outline-secondary">Clear</a>
+            {% endif %}
+        </form>
+        <a href="{% url 'admin:peso_vacancy_add' %}" target="_blank" class="btn btn-sm btn-navy d-flex align-items-center gap-1">
+            <i class="bi bi-plus-lg"></i>
+            <span>Post Vacancy</span>
+        </a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-custom table-hover align-middle">
+            <thead>
+                <tr>
+                    <th>Vacancy ID</th>
+                    <th>Position Title</th>
+                    <th>Employer</th>
+                    <th>PESO Office</th>
+                    <th class="text-center">Required</th>
+                    <th class="text-center">Referred</th>
+                    <th class="text-center">Hired</th>
+                    <th>Type</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for vac in vacancies %}
+                <tr>
+                    <td class="fw-bold text-navy font-monospace small">{{ vac.vacancy_id }}</td>
+                    <td>
+                        <div class="fw-semibold text-navy">{{ vac.position_title }}</div>
+                        <small class="text-muted">{{ vac.salary|default:"Salary negotiable" }} &bull; Posted {{ vac.date_posted }}</small>
+                    </td>
+                    <td>{{ vac.employer.company_name }}</td>
+                    <td><span class="badge bg-light text-navy border">{{ vac.peso_office.name }}</span></td>
+                    <td class="text-center fw-bold">{{ vac.no_required }}</td>
+                    <td class="text-center"><span class="badge bg-amber-subtle text-amber border">{{ vac.no_referred }}</span></td>
+                    <td class="text-center"><span class="badge bg-success-subtle text-success border">{{ vac.no_hired }}</span></td>
+                    <td><span class="badge bg-light text-secondary border">{{ vac.employment_type }}</span></td>
+                    <td>
+                        {% if vac.status|lower == 'open' %}
+                            <span class="badge bg-success-subtle text-success border border-success-subtle">Open</span>
+                        {% elif vac.status|lower == 'filled' %}
+                            <span class="badge bg-primary-subtle text-primary">Filled</span>
+                        {% else %}
+                            <span class="badge bg-secondary-subtle text-secondary">{{ vac.status }}</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="9" class="text-center py-5 text-muted">
+                        <i class="bi bi-briefcase fs-1 d-block mb-2 text-secondary"></i>
+                        No vacancies recorded yet.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block page_title %}PESO Programs Monitoring{% endblock %}
+{% block page_subtitle %}Special Program for Employment of Students (SPES), Government Internship Program (GIP), JobStart, & TUPAD{% endblock %}
+
+{% block content %}
+<div class="card border-0 shadow-sm">
+    <div class="card-header bg-white py-3 px-4 d-flex justify-content-between align-items-center">
+        <h6 class="mb-0 fw-bold text-navy">Program Beneficiaries Log</h6>
+        <a href="{% url 'admin:peso_program_add' %}" target="_blank" class="btn btn-sm btn-navy d-flex align-items-center gap-1">
+            <i class="bi bi-award"></i>
+            <span>Enroll Beneficiary</span>
+        </a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-custom table-hover align-middle">
+            <thead>
+                <tr>
+                    <th>Program ID</th>
+                    <th>Date Enrolled</th>
+                    <th>Program</th>
+                    <th>Beneficiary</th>
+                    <th>PESO Office</th>
+                    <th>Target Group</th>
+                    <th>Assistance / Activity</th>
+                    <th>Stipend / Value</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for prg in programs %}
+                <tr>
+                    <td class="fw-bold text-navy font-monospace small">{{ prg.program_id }}</td>
+                    <td>{{ prg.date_enrolled }}</td>
+                    <td><span class="badge bg-primary text-white">{{ prg.program_name }}</span></td>
+                    <td class="fw-semibold">{{ prg.beneficiary.full_name }}</td>
+                    <td><span class="badge bg-light text-navy border">{{ prg.peso_office.name }}</span></td>
+                    <td><span class="badge bg-light text-secondary border">{{ prg.target_group }}</span></td>
+                    <td>{{ prg.assistance|truncatechars:35 }}</td>
+                    <td class="fw-bold text-navy">&#8369;{{ prg.amount|floatformat:2 }}</td>
+                    <td>
+                        <span class="badge bg-success-subtle text-success border border-success-subtle">{{ prg.status }}</span>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="9" class="text-center py-5 text-muted">No program monitoring records found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

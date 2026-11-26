@@ -1,0 +1,288 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ page_title|default:"Register Jobseeker" }} &bull; PESO MASBATE{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-0" style="max-width: 1040px; margin: 0 auto;">
+
+    <!-- Breadcrumb & Page Header -->
+    <div class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between mb-4 gap-2">
+        <div>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-1 small text-muted">
+                    <li class="breadcrumb-item"><a href="{% url 'database:dashboard' %}" class="text-decoration-none text-muted">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'database:jobseeker_list' %}" class="text-decoration-none text-muted">Jobseekers</a></li>
+                    <li class="breadcrumb-item active text-dark fw-semibold" aria-current="page">{% if is_create %}Add New{% else %}Edit Record{% endif %}</li>
+                </ol>
+            </nav>
+            <h4 class="fw-bold mb-0 text-dark tracking-tight" style="color: #0F172A;">
+                {% if is_create %}Register New Jobseeker{% else %}Edit Jobseeker Profile{% endif %}
+            </h4>
+        </div>
+        <div>
+            <a href="{% url 'database:jobseeker_list' %}" class="btn btn-sm btn-light border px-3" style="border-radius: 12px;">
+                <i class="bi bi-arrow-left me-1"></i>Back to Masterlist
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Glass Form Card -->
+    <div class="card border-0 shadow-sm" style="border-radius: 20px; background-color: #FFFFFF; border: 1px solid #E2E8F0 !important;">
+        <!-- Card Header Banner -->
+        <div class="p-4 border-bottom d-flex align-items-center gap-3" style="background: linear-gradient(135deg, #F8FAFC 0%, #F1F5F9 100%); border-top-left-radius: 20px; border-top-right-radius: 20px;">
+            <div class="rounded-circle d-flex align-items-center justify-content-center text-white shadow-sm" style="width: 48px; height: 48px; background: linear-gradient(135deg, #0D9488, #14B8A6); font-size: 1.3rem; flex-shrink: 0;">
+                <i class="bi bi-person-fill-add"></i>
+            </div>
+            <div>
+                <h6 class="fw-bold mb-1 text-dark" style="font-size: 1.05rem;">DOLE/PEIS Standard Applicant Registry</h6>
+                <p class="text-muted small mb-0">Fill in the jobseeker's profile details. An official ID (e.g. <code>JS-YYYYMM-XXXXX</code>) will be generated automatically upon saving.</p>
+            </div>
+        </div>
+
+        <!-- Form Body -->
+        <div class="p-4 p-md-5">
+            <form method="post" novalidate>
+                {% csrf_token %}
+
+                {% if form.errors %}
+                <div class="alert alert-danger shadow-sm rounded-3 py-2 px-3 mb-4" role="alert">
+                    <div class="fw-bold mb-1"><i class="bi bi-exclamation-triangle-fill me-1"></i>Please correct the following errors:</div>
+                    <ul class="mb-0 small ps-3">
+                        {% for field in form %}
+                            {% for error in field.errors %}
+                                <li><strong>{{ field.label }}:</strong> {{ error }}</li>
+                            {% endfor %}
+                        {% endfor %}
+                        {% for error in form.non_field_errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+
+                <!-- SECTION 1: PERSONAL INFORMATION -->
+                <div class="mb-5">
+                    <div class="d-flex align-items-center gap-2 mb-3 pb-2 border-bottom">
+                        <span class="badge bg-teal-subtle text-teal rounded-circle d-flex align-items-center justify-content-center" style="width: 24px; height: 24px; background-color: #CCFBF1; color: #0F766E; font-size: 0.75rem;">1</span>
+                        <h6 class="fw-bold mb-0 text-dark text-uppercase tracking-wider" style="font-size: 0.85rem; letter-spacing: 0.05em; color: #1E293B;">Personal Information</h6>
+                    </div>
+
+                    <div class="row g-3">
+                        <!-- First Name -->
+                        <div class="col-12 col-md-4">
+                            <label class="form-label small fw-semibold text-secondary">First Name <span class="text-danger">*</span></label>
+                            {{ form.first_name }}
+                        </div>
+                        <!-- Middle Name -->
+                        <div class="col-12 col-md-4">
+                            <label class="form-label small fw-semibold text-secondary">Middle Name</label>
+                            {{ form.middle_name }}
+                        </div>
+                        <!-- Last Name -->
+                        <div class="col-12 col-md-4">
+                            <label class="form-label small fw-semibold text-secondary">Last Name <span class="text-danger">*</span></label>
+                            {{ form.last_name }}
+                        </div>
+
+                        <!-- Sex -->
+                        <div class="col-12 col-sm-6 col-md-3">
+                            <label class="form-label small fw-semibold text-secondary">Sex <span class="text-danger">*</span></label>
+                            {{ form.sex }}
+                        </div>
+                        <!-- Birth Date -->
+                        <div class="col-12 col-sm-6 col-md-3">
+                            <label class="form-label small fw-semibold text-secondary">Birth Date <span class="text-danger">*</span></label>
+                            {{ form.birth_date }}
+                            <small class="text-muted" style="font-size: 0.7rem;">Age is auto-calculated</small>
+                        </div>
+                        <!-- Civil Status -->
+                        <div class="col-12 col-sm-6 col-md-3">
+                            <label class="form-label small fw-semibold text-secondary">Civil Status <span class="text-danger">*</span></label>
+                            {{ form.civil_status }}
+                        </div>
+                        <!-- Mobile No -->
+                        <div class="col-12 col-sm-6 col-md-3">
+                            <label class="form-label small fw-semibold text-secondary">Mobile No.</label>
+                            {{ form.mobile_no }}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION 2: ORIGINATING PESO & LOCATION -->
+                <div class="mb-5">
+                    <div class="d-flex align-items-center gap-2 mb-3 pb-2 border-bottom">
+                        <span class="badge bg-teal-subtle text-teal rounded-circle d-flex align-items-center justify-content-center" style="width: 24px; height: 24px; background-color: #CCFBF1; color: #0F766E; font-size: 0.75rem;">2</span>
+                        <h6 class="fw-bold mb-0 text-dark text-uppercase tracking-wider" style="font-size: 0.85rem; letter-spacing: 0.05em; color: #1E293B;">Originating PESO & Residence</h6>
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-12 col-md-6">
+                            <label class="form-label small fw-semibold text-secondary">Originating PESO Office <span class="text-danger">*</span></label>
+                            {{ form.originating_peso }}
+                            <small class="text-muted" style="font-size: 0.7rem;">Select the office responsible for this registration</small>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label small fw-semibold text-secondary">Registration Date <span class="text-danger">*</span></label>
+                            {{ form.registration_date }}
+                        </div>
+
+                        <div class="col-12 col-md-4">
+                            <label class="form-label small fw-semibold text-secondary">Barangay <span class="text-danger">*</span></label>
+                            {{ form.barangay }}
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <label class="form-label small fw-semibold text-secondary">Municipality / City <span class="text-danger">*</span></label>
+                            {{ form.municipality }}
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <label class="form-label small fw-semibold text-secondary">Province <span class="text-danger">*</span></label>
+                            {{ form.province }}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION 3: EDUCATION & OCCUPATIONAL SKILLS -->
+                <div class="mb-5">
+                    <div class="d-flex align-items-center gap-2 mb-3 pb-2 border-bottom">
+                        <span class="badge bg-teal-subtle text-teal rounded-circle d-flex align-items-center justify-content-center" style="width: 24px; height: 24px; background-color: #CCFBF1; color: #0F766E; font-size: 0.75rem;">3</span>
+                        <h6 class="fw-bold mb-0 text-dark text-uppercase tracking-wider" style="font-size: 0.85rem; letter-spacing: 0.05em; color: #1E293B;">Education & Occupational Skills</h6>
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-12 col-md-4">
+                            <label class="form-label small fw-semibold text-secondary">Highest Education Level <span class="text-danger">*</span></label>
+                            {{ form.highest_education }}
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <label class="form-label small fw-semibold text-secondary">Course / Program</label>
+                            {{ form.course }}
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <label class="form-label small fw-semibold text-secondary">School Attended</label>
+                            {{ form.school }}
+                        </div>
+
+                        <div class="col-12 col-md-4">
+                            <label class="form-label small fw-semibold text-secondary">Primary Skill</label>
+                            {{ form.primary_skill }}
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <label class="form-label small fw-semibold text-secondary">Preferred Occupation</label>
+                            {{ form.preferred_occupation }}
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <label class="form-label small fw-semibold text-secondary">Other Skills</label>
+                            {{ form.other_skills }}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION 4: EMPLOYMENT STATUS & PRIORITY SECTORS -->
+                <div class="mb-5">
+                    <div class="d-flex align-items-center gap-2 mb-3 pb-2 border-bottom">
+                        <span class="badge bg-teal-subtle text-teal rounded-circle d-flex align-items-center justify-content-center" style="width: 24px; height: 24px; background-color: #CCFBF1; color: #0F766E; font-size: 0.75rem;">4</span>
+                        <h6 class="fw-bold mb-0 text-dark text-uppercase tracking-wider" style="font-size: 0.85rem; letter-spacing: 0.05em; color: #1E293B;">Status & Vulnerable Demographics</h6>
+                    </div>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-12 col-md-6">
+                            <label class="form-label small fw-semibold text-secondary">Employment Status <span class="text-danger">*</span></label>
+                            {{ form.employment_status }}
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label small fw-semibold text-secondary">Jobseeker Status <span class="text-danger">*</span></label>
+                            {{ form.jobseeker_status }}
+                        </div>
+                    </div>
+
+                    <!-- Priority Sector Switches (Modern Card Layout) -->
+                    <div class="row g-3">
+                        <div class="col-12 col-sm-6 col-lg-3">
+                            <div class="p-3 border rounded-3 bg-light d-flex align-items-center justify-content-between">
+                                <div>
+                                    <div class="fw-bold text-dark small"><i class="bi bi-universal-access text-info me-1"></i>PWD</div>
+                                    <small class="text-muted" style="font-size: 0.68rem;">Person with Disability</small>
+                                </div>
+                                <div class="form-check form-switch fs-5 mb-0">
+                                    {{ form.is_pwd }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-sm-6 col-lg-3">
+                            <div class="p-3 border rounded-3 bg-light d-flex align-items-center justify-content-between">
+                                <div>
+                                    <div class="fw-bold text-dark small"><i class="bi bi-airplane text-warning me-1"></i>Returning OFW</div>
+                                    <small class="text-muted" style="font-size: 0.68rem;">Overseas Filipino</small>
+                                </div>
+                                <div class="form-check form-switch fs-5 mb-0">
+                                    {{ form.is_returning_ofw }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-sm-6 col-lg-3">
+                            <div class="p-3 border rounded-3 bg-light d-flex align-items-center justify-content-between">
+                                <div>
+                                    <div class="fw-bold text-dark small"><i class="bi bi-exclamation-octagon text-danger me-1"></i>Displaced</div>
+                                    <small class="text-muted" style="font-size: 0.68rem;">Displaced Worker</small>
+                                </div>
+                                <div class="form-check form-switch fs-5 mb-0">
+                                    {{ form.is_displaced_worker }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-sm-6 col-lg-3">
+                            <div class="p-3 border rounded-3 bg-light d-flex align-items-center justify-content-between">
+                                <div>
+                                    <div class="fw-bold text-dark small"><i class="bi bi-backpack text-secondary me-1"></i>OSY</div>
+                                    <small class="text-muted" style="font-size: 0.68rem;">Out-of-School Youth</small>
+                                </div>
+                                <div class="form-check form-switch fs-5 mb-0">
+                                    {{ form.is_osy }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION 5: PRIVACY CONSENT & REMARKS -->
+                <div class="mb-4">
+                    <div class="d-flex align-items-center gap-2 mb-3 pb-2 border-bottom">
+                        <span class="badge bg-teal-subtle text-teal rounded-circle d-flex align-items-center justify-content-center" style="width: 24px; height: 24px; background-color: #CCFBF1; color: #0F766E; font-size: 0.75rem;">5</span>
+                        <h6 class="fw-bold mb-0 text-dark text-uppercase tracking-wider" style="font-size: 0.85rem; letter-spacing: 0.05em; color: #1E293B;">Data Privacy & Remarks</h6>
+                    </div>
+
+                    <!-- RA 10173 Consent Box -->
+                    <div class="p-3 mb-3 rounded-3 border" style="background-color: #F8FAFC; border-color: #E2E8F0 !important;">
+                        <div class="form-check d-flex align-items-start gap-2">
+                            {{ form.data_privacy_consent }}
+                            <label class="form-check-label small text-secondary" for="{{ form.data_privacy_consent.id_for_label }}">
+                                <strong>Data Privacy Act of 2012 (RA 10173) Consent:</strong> The applicant has been informed and has given voluntary consent for the Provincial Government of Masbate PESO to collect, record, store, and process their personal and employment data for job matching, referrals, and labor market reports.
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold text-secondary">Internal Remarks</label>
+                        {{ form.remarks }}
+                    </div>
+                </div>
+
+                <!-- ACTION BUTTONS -->
+                <div class="pt-4 border-top d-flex flex-column flex-sm-row align-items-center justify-content-between gap-3">
+                    <a href="{% url 'database:jobseeker_list' %}" class="btn btn-light border px-4" style="border-radius: 12px; font-weight: 500;">
+                        <i class="bi bi-x-circle me-1"></i>Cancel
+                    </a>
+                    <button type="submit" class="btn btn-teal px-5 py-2 shadow-sm d-flex align-items-center gap-2" style="border-radius: 12px; font-size: 0.95rem;">
+                        <i class="bi bi-check2-circle fs-5"></i>
+                        <span>Save Jobseeker Record</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

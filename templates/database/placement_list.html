@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block page_title %}Placements (Confirmed Hires){% endblock %}
+{% block page_subtitle %}Official Employment Outcomes & Verified Hires Across Masbate Province{% endblock %}
+
+{% block content %}
+<div class="card border-0 shadow-sm">
+    <div class="card-header bg-white py-3 px-4 d-flex justify-content-between align-items-center">
+        <h6 class="mb-0 fw-bold text-navy">Verified Placement Records</h6>
+        <a href="{% url 'admin:peso_placement_add' %}" target="_blank" class="btn btn-sm btn-navy d-flex align-items-center gap-1">
+            <i class="bi bi-person-check-fill"></i>
+            <span>Confirm Placement</span>
+        </a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-custom table-hover align-middle">
+            <thead>
+                <tr>
+                    <th>Placement ID</th>
+                    <th>Date Hired</th>
+                    <th>Hired Applicant</th>
+                    <th>Position Title</th>
+                    <th>Employer</th>
+                    <th>PESO Office</th>
+                    <th>Employment Type</th>
+                    <th>Verified</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for plc in placements %}
+                <tr>
+                    <td class="fw-bold text-navy font-monospace small">{{ plc.placement_id }}</td>
+                    <td>{{ plc.date_hired }}</td>
+                    <td>
+                        <div class="fw-semibold">{{ plc.jobseeker.full_name }}</div>
+                        <small class="text-muted">{{ plc.jobseeker.mobile_no }}</small>
+                    </td>
+                    <td>{{ plc.position }}</td>
+                    <td>{{ plc.employer.company_name }}</td>
+                    <td><span class="badge bg-light text-navy border">{{ plc.peso_office.name }}</span></td>
+                    <td><span class="badge bg-light text-secondary border">{{ plc.employment_type }}</span></td>
+                    <td>
+                        {% if plc.verified %}
+                            <span class="badge bg-success-subtle text-success border border-success-subtle"><i class="bi bi-check-circle-fill me-1"></i>Verified</span>
+                        {% else %}
+                            <span class="badge bg-warning-subtle text-warning">Pending</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="8" class="text-center py-5 text-muted">No placements recorded yet.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

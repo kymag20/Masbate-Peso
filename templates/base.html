@@ -1,0 +1,342 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}PESO MASBATE – Provincial Database System{% endblock %}</title>
+    <link rel="icon" type="image/jpeg" href="{% static 'img/peso_masbate_logo.jpg' %}">
+
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap 5.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+
+    <style>
+        :root {
+            /* Palette matched to uploaded reference */
+            --sidebar-bg: #1E3545;
+            --sidebar-active: #2D4857;
+            --sidebar-text: #94A9B8;
+            --sidebar-hover: rgba(255, 255, 255, 0.06);
+            --app-bg: #EBF1F6;
+            --card-bg: #FFFFFF;
+            --card-radius: 18px;
+            --sidebar-width: 230px;
+            --teal-accent: #0D9488;
+            --teal-light: #2DD4BF;
+            --teal-subtle: #CCFBF1;
+            --blue-subtle: #E0F2FE;
+            --amber-subtle: #FEF3C7;
+            --danger-subtle: #FEE2E2;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--app-bg);
+            color: #1E293B;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            font-size: 0.875rem;
+        }
+
+        /* Fixed Oceanic Slate Sidebar */
+        .app-sidebar-fixed {
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            width: var(--sidebar-width);
+            background-color: var(--sidebar-bg);
+            z-index: 1030;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .app-main-content {
+            margin-left: var(--sidebar-width);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--app-bg);
+            transition: all 0.2s ease;
+        }
+
+        @media (max-width: 991.98px) {
+            .app-sidebar-fixed {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease-in-out;
+            }
+            .app-sidebar-fixed.show {
+                transform: translateX(0);
+            }
+            .app-main-content {
+                margin-left: 0;
+            }
+        }
+
+        /* Modern Glass Cards */
+        .glass-card, .card {
+            border: 1px solid #E2E8F0;
+            border-radius: var(--card-radius);
+            box-shadow: 0 4px 18px rgba(15, 23, 42, 0.03), 0 1px 3px rgba(15, 23, 42, 0.02);
+            background-color: var(--card-bg);
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+        .card-header {
+            background-color: transparent;
+            border-bottom: 1px solid #F1F5F9;
+            padding: 1rem 1.25rem;
+            font-weight: 600;
+        }
+
+        /* Modern Input Controls */
+        .modern-input, .form-control, .form-select {
+            border-radius: 12px;
+            border: 1px solid #CBD5E1;
+            padding: 0.6rem 0.9rem;
+            font-size: 0.85rem;
+            color: #0F172A;
+            background-color: #FFFFFF;
+            transition: all 0.15s ease-in-out;
+        }
+        .modern-input:focus, .form-control:focus, .form-select:focus {
+            border-color: var(--teal-accent);
+            box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15);
+            outline: none;
+        }
+
+        /* Pill quick search on Top Bar */
+        .quick-search-pill {
+            background-color: #FFFFFF;
+            border: 1px solid #E2E8F0;
+            border-radius: 20px;
+            padding: 0.45rem 1rem;
+            width: 280px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+        }
+        .quick-search-pill input {
+            border: none;
+            background: transparent;
+            outline: none;
+            font-size: 0.825rem;
+            width: 100%;
+        }
+
+        /* Buttons */
+        .btn-teal {
+            background-color: #0D9488;
+            color: #FFFFFF;
+            border-radius: 10px;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border: none;
+            transition: background 0.2s ease, transform 0.1s ease;
+        }
+        .btn-teal:hover {
+            background-color: #0F766E;
+            color: #FFFFFF;
+            transform: translateY(-1px);
+        }
+
+        .btn-navy {
+            background-color: #1E3545;
+            color: #FFFFFF;
+            border-radius: 10px;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border: none;
+        }
+        .btn-navy:hover {
+            background-color: #2D4857;
+            color: #FFFFFF;
+        }
+
+        /* Status Pills matching uploaded UI */
+        .badge-pill-mint {
+            background-color: #D1FAE5;
+            color: #065F46;
+            font-weight: 600;
+            padding: 0.35rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+        }
+        .badge-pill-blue {
+            background-color: #DBEAFE;
+            color: #1E40AF;
+            font-weight: 600;
+            padding: 0.35rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+        }
+        .badge-pill-amber {
+            background-color: #FEF3C7;
+            color: #92400E;
+            font-weight: 600;
+            padding: 0.35rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+        }
+
+        /* Tables matching uploaded UI */
+        .table-enterprise {
+            margin-bottom: 0;
+            font-size: 0.84rem;
+        }
+        .table-enterprise thead th {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #64748B;
+            font-weight: 600;
+            border-bottom: 1px solid #E2E8F0;
+            background-color: #FAFCFE;
+            padding: 0.85rem 1rem;
+        }
+        .table-enterprise tbody td {
+            padding: 0.85rem 1rem;
+            border-bottom: 1px solid #F1F5F9;
+            vertical-align: middle;
+            color: #334155;
+        }
+        .table-enterprise tbody tr:hover td {
+            background-color: #F8FAFD;
+        }
+
+        /* Section Headings */
+        .section-header-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #0F172A;
+            margin-bottom: 0.85rem;
+            letter-spacing: -0.01em;
+        }
+
+        /* Radial gauge progress wrapper */
+        .circular-progress-box {
+            position: relative;
+            width: 110px;
+            height: 110px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SIDEBAR (Oceanic Slate) -->
+    <aside class="app-sidebar-fixed" id="appSidebar">
+        {% include "includes/sidebar.html" %}
+    </aside>
+
+    <!-- MAIN CONTENT AREA -->
+    <div class="app-main-content">
+        <!-- TOP BAR (Frosted Clean Header) -->
+        <header class="top-nav-bar px-4 py-3 d-flex align-items-center justify-content-between border-bottom bg-white" style="border-color: #E2E8F0 !important;">
+            <!-- Mobile Toggle + Quick Search -->
+            <div class="d-flex align-items-center gap-3">
+                <button class="btn btn-sm btn-light d-lg-none" type="button" onclick="document.getElementById('appSidebar').classList.toggle('show')">
+                    <i class="bi bi-list fs-5"></i>
+                </button>
+                <div class="quick-search-pill d-flex align-items-center">
+                    <i class="bi bi-search text-muted me-2" style="font-size: 0.85rem;"></i>
+                    <input type="text" id="globalQuickSearch" placeholder="Quick search..." onkeyup="if(event.key==='Enter'){window.location.href='{% url 'database:jobseeker_list' %}?q='+this.value;}">
+                </div>
+            </div>
+
+            <!-- Right Controls: Period, Office Filter, Add Button, Profile Pill -->
+            <div class="d-flex align-items-center gap-2 gap-sm-3">
+                <!-- PESO Office Filter Dropdown -->
+                <div class="dropdown d-none d-md-block">
+                    <button class="btn btn-sm btn-light border dropdown-toggle fw-medium px-3 py-1 text-secondary" style="border-radius: 20px; font-size: 0.8rem;" type="button" data-bs-toggle="dropdown">
+                        <i class="bi bi-geo-alt me-1 text-teal"></i>
+                        {% if selected_office %}{{ selected_office.name }}{% else %}All PESO Offices{% endif %}
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 py-1" style="max-height: 280px; overflow-y: auto; font-size: 0.82rem;">
+                        <li><a class="dropdown-item {% if not selected_office_id %}active fw-bold{% endif %}" href="?{% if selected_period %}period={{ selected_period }}{% endif %}">All PESO Offices</a></li>
+                        <li><hr class="dropdown-divider my-1"></li>
+                        {% for off in peso_offices_list %}
+                        <li><a class="dropdown-item {% if selected_office_id == off.id|stringformat:'s' %}active fw-bold{% endif %}" href="?office={{ off.id }}{% if selected_period %}&period={{ selected_period }}{% endif %}">{{ off.name }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <!-- Notifications Bell -->
+                <button class="btn btn-sm btn-light rounded-circle p-2 text-muted position-relative" style="width: 36px; height: 36px;">
+                    <i class="bi bi-bell"></i>
+                    <span class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle"></span>
+                </button>
+
+                <!-- Settings Gear -->
+                <a href="{% url 'admin:index' %}" target="_blank" class="btn btn-sm btn-light rounded-circle p-2 text-muted d-none d-sm-inline-flex align-items-center justify-content-center" style="width: 36px; height: 36px;" title="System Admin">
+                    <i class="bi bi-gear"></i>
+                </a>
+
+                <!-- + Add Record Button -->
+                <div class="dropdown">
+                    <button class="btn btn-sm btn-teal d-flex align-items-center gap-1 shadow-sm px-3" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="border-radius: 20px;">
+                        <i class="bi bi-plus-lg"></i>
+                        <span>Add Record</span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end shadow border-0 py-2" style="font-size: 0.85rem; border-radius: 14px;">
+                        <li><a class="dropdown-item py-2 d-flex align-items-center gap-2" href="{% url 'database:jobseeker_add' %}"><i class="bi bi-person-plus text-primary fs-6"></i>New Jobseeker</a></li>
+                        <li><a class="dropdown-item py-2 d-flex align-items-center gap-2" href="{% url 'database:employer_add' %}"><i class="bi bi-building-add text-amber fs-6"></i>New Employer</a></li>
+                        <li><hr class="dropdown-divider my-1"></li>
+                        <li><a class="dropdown-item py-2 d-flex align-items-center gap-2" href="{% url 'admin:peso_vacancy_add' %}" target="_blank"><i class="bi bi-briefcase text-info fs-6"></i>Post Vacancy</a></li>
+                        <li><a class="dropdown-item py-2 d-flex align-items-center gap-2" href="{% url 'admin:peso_referral_add' %}" target="_blank"><i class="bi bi-arrow-left-right text-success fs-6"></i>New Referral</a></li>
+                        <li><a class="dropdown-item py-2 d-flex align-items-center gap-2" href="{% url 'admin:peso_placement_add' %}" target="_blank"><i class="bi bi-person-check text-success fs-6"></i>Confirm Placement</a></li>
+                    </ul>
+                </div>
+
+                <!-- User Badge Pill -->
+                <div class="user-pill d-none d-md-flex align-items-center gap-2 px-3 py-1 bg-light rounded-pill border" style="font-size: 0.8rem;">
+                    <i class="bi bi-person-circle text-secondary"></i>
+                    <span class="fw-semibold text-dark">
+                        {% if user.get_full_name %}{{ user.get_full_name }}{% else %}{{ user.username }}{% endif %}
+                    </span>
+                </div>
+            </div>
+        </header>
+
+        <!-- PAGE CONTENT CONTAINER -->
+        <main class="flex-grow-1 p-3 p-lg-4">
+            <!-- Messages / Flash Alerts -->
+            {% if messages %}
+            <div class="container-fluid px-0 mb-3">
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show shadow-sm rounded-3 py-2 px-3" role="alert">
+                    <i class="bi bi-check-circle-fill me-2"></i>{{ message }}
+                    <button type="button" class="btn-close py-2" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            {% block content %}{% endblock %}
+        </main>
+
+        <!-- FOOTER -->
+        <footer class="py-3 px-4 border-top bg-white text-muted small d-flex flex-column flex-sm-row justify-content-between align-items-center" style="border-color: #E2E8F0 !important;">
+            <div>
+                &copy; {% now "Y" %} <strong>Provincial Government of Masbate</strong> &ndash; Public Employment Service Office
+            </div>
+            <div class="d-flex align-items-center gap-3">
+                <span><i class="bi bi-shield-check text-success me-1"></i>RA 10173 DPA Compliant</span>
+                <span>Version 2.0 (PostgreSQL)</span>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,238 @@
+{% load static %}
+<div class="d-flex flex-column justify-content-between h-100" style="background-color: #1E3545; color: #94A9B8;">
+    
+    <!-- Brand Header -->
+    <div class="px-4 py-3 d-flex align-items-center justify-content-between border-bottom" style="border-color: rgba(255, 255, 255, 0.08) !important;">
+        <a href="{% url 'database:dashboard' %}" class="d-flex align-items-center gap-2 text-decoration-none text-white">
+            <img src="{% static 'img/peso_masbate_logo.jpg' %}" alt="PESO Masbate" class="rounded-circle shadow-sm" style="width: 38px; height: 38px; object-fit: contain; background-color: #FFFFFF; border: 2px solid rgba(255, 255, 255, 0.2);">
+            <div>
+                <div class="fw-bold text-white tracking-tight" style="font-size: 0.95rem; line-height: 1.1;">PESO MASBATE</div>
+                <small style="font-size: 0.65rem; color: #2DD4BF; letter-spacing: 0.08em; text-transform: uppercase;">Provincial DB</small>
+            </div>
+        </a>
+        <button type="button" class="btn-close btn-close-white d-lg-none" onclick="document.getElementById('appSidebar').classList.remove('show')" aria-label="Close"></button>
+    </div>
+
+    <!-- Navigation Menu (Pill Links matching image) -->
+    <div class="flex-grow-1 overflow-y-auto px-3 py-3" style="scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.1) transparent;">
+        
+        <!-- SECTION: OVERVIEW -->
+        <div class="px-3 mb-2 text-uppercase fw-semibold" style="font-size: 0.65rem; color: #64748B; letter-spacing: 0.08em;">
+            Overview
+        </div>
+        <ul class="nav flex-column gap-1 mb-3">
+            <li class="nav-item">
+                <a href="{% url 'database:dashboard' %}" class="nav-link d-flex align-items-center gap-2 {% if active_menu == 'dashboard' or not active_menu %}active-pill{% else %}sidebar-link{% endif %}">
+                    <i class="bi bi-grid-1x2"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{% url 'database:provincial_report' %}" class="nav-link d-flex align-items-center gap-2 {% if active_menu == 'reports' %}active-pill{% else %}sidebar-link{% endif %}">
+                    <i class="bi bi-file-earmark-bar-graph"></i>
+                    <span>Reports</span>
+                </a>
+            </li>
+        </ul>
+
+        <!-- SECTION: REGISTRIES -->
+        <div class="px-3 mb-2 text-uppercase fw-semibold" style="font-size: 0.65rem; color: #64748B; letter-spacing: 0.08em;">
+            Registries
+        </div>
+        <ul class="nav flex-column gap-1 mb-3">
+            <li class="nav-item">
+                <a href="{% url 'database:jobseeker_list' %}" class="nav-link d-flex align-items-center justify-content-between {% if active_menu == 'jobseekers' %}active-pill{% else %}sidebar-link{% endif %}">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-people"></i>
+                        <span>Jobseekers</span>
+                    </div>
+                    {% if total_jobseekers_badge %}
+                    <span class="badge rounded-pill bg-light text-dark fw-bold" style="font-size: 0.68rem;">{{ total_jobseekers_badge }}</span>
+                    {% endif %}
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{% url 'database:employer_list' %}" class="nav-link d-flex align-items-center justify-content-between {% if active_menu == 'employers' %}active-pill{% else %}sidebar-link{% endif %}">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-building"></i>
+                        <span>Employers</span>
+                    </div>
+                    {% if total_employers_badge %}
+                    <span class="badge rounded-pill" style="background-color: #2DD4BF; color: #0F172A; font-weight: 700; font-size: 0.68rem;">{{ total_employers_badge }}</span>
+                    {% endif %}
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{% url 'database:vacancy_list' %}" class="nav-link d-flex align-items-center justify-content-between {% if active_menu == 'vacancies' %}active-pill{% else %}sidebar-link{% endif %}">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-briefcase"></i>
+                        <span>Vacancies</span>
+                    </div>
+                    {% if total_vacancies_badge %}
+                    <span class="badge rounded-pill bg-light text-dark fw-bold" style="font-size: 0.68rem;">{{ total_vacancies_badge }}</span>
+                    {% endif %}
+                </a>
+            </li>
+        </ul>
+
+        <!-- SECTION: TRANSACTIONS -->
+        <div class="px-3 mb-2 text-uppercase fw-semibold" style="font-size: 0.65rem; color: #64748B; letter-spacing: 0.08em;">
+            Transactions
+        </div>
+        <ul class="nav flex-column gap-1 mb-3">
+            <li class="nav-item">
+                <a href="{% url 'database:referral_list' %}" class="nav-link d-flex align-items-center gap-2 {% if active_menu == 'referrals' %}active-pill{% else %}sidebar-link{% endif %}">
+                    <i class="bi bi-arrow-left-right"></i>
+                    <span>Referrals</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{% url 'database:placement_list' %}" class="nav-link d-flex align-items-center gap-2 {% if active_menu == 'placements' %}active-pill{% else %}sidebar-link{% endif %}">
+                    <i class="bi bi-person-check"></i>
+                    <span>Placements</span>
+                </a>
+            </li>
+        </ul>
+
+        <!-- SECTION: OPERATIONS -->
+        <div class="px-3 mb-2 text-uppercase fw-semibold" style="font-size: 0.65rem; color: #64748B; letter-spacing: 0.08em;">
+            Operations
+        </div>
+        <ul class="nav flex-column gap-1 mb-3">
+            <li class="nav-item">
+                <a href="{% url 'database:service_list' %}" class="nav-link d-flex align-items-center gap-2 {% if active_menu == 'services' %}active-pill{% else %}sidebar-link{% endif %}">
+                    <i class="bi bi-hand-thumbs-up"></i>
+                    <span>Services</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{% url 'database:program_list' %}" class="nav-link d-flex align-items-center gap-2 {% if active_menu == 'programs' %}active-pill{% else %}sidebar-link{% endif %}">
+                    <i class="bi bi-award"></i>
+                    <span>Programs</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{% url 'database:jobfair_list' %}" class="nav-link d-flex align-items-center gap-2 {% if active_menu == 'job_fairs' %}active-pill{% else %}sidebar-link{% endif %}">
+                    <i class="bi bi-calendar2-event"></i>
+                    <span>Job Fairs</span>
+                </a>
+            </li>
+        </ul>
+
+        <!-- SECTION: SYSTEM -->
+        <div class="px-3 mb-2 text-uppercase fw-semibold" style="font-size: 0.65rem; color: #64748B; letter-spacing: 0.08em;">
+            Settings
+        </div>
+        <ul class="nav flex-column gap-1">
+            {% if user.is_superuser or user_profile.is_provincial_admin %}
+            <li class="nav-item">
+                <a href="{% url 'database:user_management' %}" class="nav-link d-flex align-items-center justify-content-between {% if active_menu == 'users' %}active-pill{% else %}sidebar-link{% endif %}">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-person-check"></i>
+                        <span>User Approvals</span>
+                    </div>
+                    {% if pending_approvals_count %}
+                    <span class="badge rounded-pill bg-warning text-dark fw-bold" style="font-size: 0.68rem;">{{ pending_approvals_count }}</span>
+                    {% endif %}
+                </a>
+            </li>
+            {% endif %}
+            <li class="nav-item">
+                <a href="{% url 'database:office_list' %}" class="nav-link d-flex align-items-center justify-content-between {% if active_menu == 'offices' %}active-pill{% else %}sidebar-link{% endif %}">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-geo-alt"></i>
+                        <span>Offices</span>
+                    </div>
+                    {% if total_offices_badge %}
+                    <span class="badge rounded-pill bg-light text-dark fw-bold" style="font-size: 0.68rem;">{{ total_offices_badge }}</span>
+                    {% endif %}
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{% url 'admin:peso_lookupchoice_changelist' %}" target="_blank" class="nav-link d-flex align-items-center gap-2 sidebar-link">
+                    <i class="bi bi-list-check"></i>
+                    <span>Dropdown Lists</span>
+                    <i class="bi bi-box-arrow-up-right ms-auto" style="font-size: 0.7rem;"></i>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{% url 'admin:index' %}" target="_blank" class="nav-link d-flex align-items-center gap-2 sidebar-link">
+                    <i class="bi bi-sliders"></i>
+                    <span>Django Admin</span>
+                    <i class="bi bi-box-arrow-up-right ms-auto" style="font-size: 0.7rem;"></i>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Pinned User Profile Card at Bottom of Sidebar (Matching reference photo) -->
+    <div class="p-3 border-top" style="border-color: rgba(255, 255, 255, 0.08) !important;">
+        <div class="d-flex align-items-center justify-content-between p-2 rounded-3" style="background-color: rgba(255, 255, 255, 0.04);">
+            <div class="d-flex align-items-center gap-2 overflow-hidden">
+                <div class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold" style="width: 34px; height: 34px; background: linear-gradient(135deg, #0D9488, #2DD4BF); font-size: 0.8rem; flex-shrink: 0;">
+                    {% if user.first_name %}{{ user.first_name|slice:":1" }}{{ user.last_name|slice:":1" }}{% else %}{{ user.username|slice:":2"|upper }}{% endif %}
+                </div>
+                <div class="overflow-hidden">
+                    <div class="fw-bold text-white text-truncate" style="font-size: 0.8rem; line-height: 1.2;">
+                        {% if user.get_full_name %}{{ user.get_full_name }}{% else %}{{ user.username }}{% endif %}
+                    </div>
+                    <div class="text-truncate" style="font-size: 0.68rem; color: #94A9B8;">
+                        {% if user.is_superuser or user_profile.is_provincial_admin %}
+                            Provincial Admin
+                        {% elif user_profile.peso_office %}
+                            {{ user_profile.peso_office.name }}
+                        {% else %}
+                            PESO Encoder
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="dropdown">
+                <button class="btn btn-sm text-light p-0 border-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-chevron-down" style="font-size: 0.75rem;"></i>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end shadow border-0 py-1" style="font-size: 0.8rem; border-radius: 10px;">
+                    <li><a class="dropdown-item py-1" href="{% url 'admin:password_change' %}"><i class="bi bi-key me-2"></i>Change Password</a></li>
+                    <li><hr class="dropdown-divider my-1"></li>
+                    <li>
+                        <form action="{% url 'logout' %}" method="post" class="d-inline">
+                            {% csrf_token %}
+                            <button type="submit" class="dropdown-item text-danger py-1"><i class="bi bi-box-arrow-right me-2"></i>Log Out</button>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .sidebar-link {
+        color: #94A9B8;
+        font-size: 0.825rem;
+        font-weight: 500;
+        padding: 0.55rem 0.85rem;
+        border-radius: 10px;
+        transition: all 0.15s ease;
+        text-decoration: none;
+    }
+    .sidebar-link:hover {
+        color: #FFFFFF;
+        background-color: rgba(255, 255, 255, 0.06);
+    }
+    .sidebar-link i, .active-pill i {
+        font-size: 0.95rem;
+        width: 18px;
+    }
+    .active-pill {
+        color: #FFFFFF !important;
+        background-color: #2D4857 !important;
+        font-size: 0.825rem;
+        font-weight: 600;
+        padding: 0.55rem 0.85rem;
+        border-radius: 10px;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        text-decoration: none;
+    }
+</style>

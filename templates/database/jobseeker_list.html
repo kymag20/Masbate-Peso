@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Jobseekers Registry &bull; PESO MASBATE{% endblock %}
+
+{% block content %}
+<div class="card glass-card border-0 shadow-sm overflow-hidden mb-4">
+    <!-- Header with Search & Filter Controls -->
+    <div class="card-header bg-white py-3 px-4 d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 border-bottom">
+        <div>
+            <h5 class="fw-bold mb-0 text-dark tracking-tight" style="font-size: 1.1rem;">Jobseeker Registry</h5>
+            <small class="text-muted" style="font-size: 0.75rem;">DOLE/PEIS Standard Profiled Applicants & Skills Database</small>
+        </div>
+
+        <div class="d-flex flex-wrap align-items-center gap-2">
+            <form method="get" class="d-flex align-items-center gap-2">
+                <div class="position-relative">
+                    <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted" style="font-size: 0.8rem;"></i>
+                    <input type="text" name="q" value="{{ q }}" class="form-control form-control-sm ps-5 pe-3" placeholder="Search applicant, skill, ID..." style="border-radius: 20px; font-size: 0.8rem; width: 230px;">
+                </div>
+
+                <!-- Status Filter -->
+                <select name="status" class="form-select form-select-sm" style="border-radius: 20px; font-size: 0.8rem; width: auto;" onchange="this.form.submit()">
+                    <option value="">All Statuses</option>
+                    <option value="Active" {% if status_filter == "Active" %}selected{% endif %}>Active</option>
+                    <option value="Placed" {% if status_filter == "Placed" %}selected{% endif %}>Placed</option>
+                    <option value="Inactive" {% if status_filter == "Inactive" %}selected{% endif %}>Inactive</option>
+                    <option value="For Follow-up" {% if status_filter == "For Follow-up" %}selected{% endif %}>Follow-up</option>
+                </select>
+
+                {% if q or status_filter %}
+                <a href="{% url 'database:jobseeker_list' %}" class="btn btn-sm btn-light border px-2 py-1 rounded-pill" style="font-size: 0.78rem;">Clear</a>
+                {% endif %}
+            </form>
+
+            <!-- + Add Jobseeker Button -->
+            <a href="{% url 'database:jobseeker_add' %}" class="btn btn-sm btn-teal d-flex align-items-center gap-1 shadow-sm px-3" style="border-radius: 20px;">
+                <i class="bi bi-plus-lg"></i>
+                <span>Register Jobseeker</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Table -->
+    <div class="table-responsive">
+        <table class="table table-enterprise table-hover align-middle mb-0">
+            <thead>
+                <tr>
+                    <th style="width: 140px;">Jobseeker ID</th>
+                    <th>Full Name</th>
+                    <th>Age / Sex</th>
+                    <th>Originating PESO</th>
+                    <th>Education / Course</th>
+                    <th>Primary Skill</th>
+                    <th class="text-center">Status</th>
+                    <th class="text-center">DPA Consent</th>
+                    <th class="text-end" style="width: 110px;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for js in jobseekers %}
+                <tr>
+                    <td class="fw-bold font-monospace text-teal small">
+                        {{ js.jobseeker_code }}
+                    </td>
+                    <td>
+                        <div class="fw-semibold text-dark">{{ js.full_name }}</div>
+                        <small class="text-muted" style="font-size: 0.72rem;">{{ js.barangay }}, {{ js.municipality }}</small>
+                    </td>
+                    <td class="small">
+                        <div class="fw-medium">{{ js.age|default:"-" }} yrs</div>
+                        <small class="text-muted" style="font-size: 0.72rem;">{{ js.sex }} &bull; {{ js.civil_status }}</small>
+                    </td>
+                    <td>
+                        <span class="badge bg-light text-dark border rounded-pill px-2 py-1" style="font-size: 0.72rem;">{{ js.originating_peso.name }}</span>
+                    </td>
+                    <td class="small">
+                        <div class="fw-medium text-dark">{{ js.highest_education }}</div>
+                        {% if js.course %}<small class="text-muted" style="font-size: 0.72rem;">{{ js.course|truncatechars:22 }}</small>{% endif %}
+                    </td>
+                    <td class="small">
+                        <span class="text-secondary">{{ js.primary_skill|default:"-" }}</span>
+                    </td>
+                    <td class="text-center">
+                        {% if js.jobseeker_status|lower == 'active' %}
+                            <span class="badge-pill-mint">Active</span>
+                        {% elif js.jobseeker_status|lower == 'placed' %}
+                            <span class="badge-pill-blue">Placed</span>
+                        {% else %}
+                            <span class="badge-pill-amber">{{ js.jobseeker_status }}</span>
+                        {% endif %}
+                    </td>
+                    <td class="text-center">
+                        {% if js.data_privacy_consent %}
+                            <span class="text-success small fw-semibold"><i class="bi bi-shield-check me-1"></i>Yes</span>
+                        {% else %}
+                            <span class="text-danger small fw-semibold"><i class="bi bi-shield-x me-1"></i>No</span>
+                        {% endif %}
+                    </td>
+                    <td class="text-end">
+                        <div class="d-flex align-items-center justify-content-end gap-1">
+                            <a href="{% url 'database:jobseeker_edit' js.pk %}" class="btn btn-sm btn-light border p-1 rounded-2 text-muted" title="Edit Jobseeker" style="width: 28px; height: 28px;">
+                                <i class="bi bi-pencil" style="font-size: 0.75rem;"></i>
+                            </a>
+                            <a href="{% url 'admin:peso_jobseeker_change' js.pk %}" target="_blank" class="btn btn-sm btn-light border p-1 rounded-2 text-muted" title="Admin Details" style="width: 28px; height: 28px;">
+                                <i class="bi bi-three-dots" style="font-size: 0.75rem;"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="9" class="text-center py-5 text-muted">
+                        <i class="bi bi-person-x fs-1 d-block mb-2 text-secondary"></i>
+                        No jobseekers found matching your criteria.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    {% if is_paginated %}
+    <div class="p-3 bg-light border-top d-flex flex-column flex-sm-row align-items-center justify-content-between gap-2" style="font-size: 0.75rem;">
+        <span class="text-muted">Showing <strong>{{ page_obj.start_index }} &ndash; {{ page_obj.end_index }}</strong> of <strong>{{ paginator.count }}</strong> jobseekers</span>
+        <div class="d-flex align-items-center gap-1">
+            {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}{% if q %}&q={{ q }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}" class="btn btn-sm btn-white border px-2 py-1 rounded-2 text-muted"><i class="bi bi-chevron-left"></i></a>
+            {% else %}
+            <button class="btn btn-sm btn-white border px-2 py-1 rounded-2 text-muted" disabled><i class="bi bi-chevron-left"></i></button>
+            {% endif %}
+
+            <span class="btn btn-sm btn-teal px-3 py-1 rounded-2 text-white fw-bold">{{ page_obj.number }}</span>
+
+            {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}{% if q %}&q={{ q }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}" class="btn btn-sm btn-white border px-2 py-1 rounded-2 text-muted"><i class="bi bi-chevron-right"></i></a>
+            {% else %}
+            <button class="btn btn-sm btn-white border px-2 py-1 rounded-2 text-muted" disabled><i class="bi bi-chevron-right"></i></button>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

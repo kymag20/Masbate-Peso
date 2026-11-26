@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block page_title %}Applicant Referrals & Matching{% endblock %}
+{% block page_subtitle %}Tracking Jobseeker Referrals to Active Employer Vacancies{% endblock %}
+
+{% block content %}
+<div class="card border-0 shadow-sm">
+    <div class="card-header bg-white py-3 px-4 d-flex justify-content-between align-items-center">
+        <h6 class="mb-0 fw-bold text-navy">Referral Transactions</h6>
+        <a href="{% url 'admin:peso_referral_add' %}" target="_blank" class="btn btn-sm btn-navy d-flex align-items-center gap-1">
+            <i class="bi bi-plus-lg"></i>
+            <span>Encode Referral</span>
+        </a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-custom table-hover align-middle">
+            <thead>
+                <tr>
+                    <th>Referral ID</th>
+                    <th>Date</th>
+                    <th>Jobseeker</th>
+                    <th>Target Position</th>
+                    <th>Employer</th>
+                    <th>PESO Office</th>
+                    <th>Result</th>
+                    <th>Follow-up</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ref in referrals %}
+                <tr>
+                    <td class="fw-bold text-navy font-monospace small">{{ ref.referral_id }}</td>
+                    <td>{{ ref.referral_date }}</td>
+                    <td>
+                        <div class="fw-semibold">{{ ref.jobseeker.full_name }}</div>
+                        <small class="text-muted">{{ ref.jobseeker.mobile_no }}</small>
+                    </td>
+                    <td>{{ ref.position_referred }}</td>
+                    <td>{{ ref.employer.company_name }}</td>
+                    <td><span class="badge bg-light text-navy border">{{ ref.peso_office.name }}</span></td>
+                    <td>
+                        <span class="badge bg-amber-subtle text-amber border">{{ ref.result }}</span>
+                    </td>
+                    <td>
+                        {% if ref.follow_up_needed %}
+                            <span class="badge bg-danger-subtle text-danger"><i class="bi bi-bell-fill me-1"></i>Required</span>
+                        {% else %}
+                            <span class="text-muted small">No</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="8" class="text-center py-5 text-muted">No referrals recorded yet.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

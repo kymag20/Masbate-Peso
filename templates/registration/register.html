@@ -1,0 +1,212 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register Account &bull; PESO MASBATE Provincial Database</title>
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #F0F4F8 0%, #E2E8F0 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1rem;
+        }
+        .register-card {
+            border: 0;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px -5px rgba(15, 23, 42, 0.1), 0 8px 12px -6px rgba(15, 23, 42, 0.05);
+            max-width: 680px;
+            width: 100%;
+            background-color: #FFFFFF;
+        }
+        .bg-navy { background-color: #1E3545 !important; }
+        .text-navy { color: #1E3545 !important; }
+        .btn-navy {
+            background-color: #1E3545;
+            border-color: #1E3545;
+            color: #FFFFFF;
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            transition: all 0.2s ease;
+        }
+        .btn-navy:hover {
+            background-color: #132430;
+            border-color: #132430;
+            color: #FFFFFF;
+        }
+        .modern-input {
+            border-radius: 9px;
+            border: 1px solid #E2E8F0;
+            padding: 0.65rem 0.9rem;
+            font-size: 0.88rem;
+            background-color: #F8FAFC;
+            transition: all 0.2s ease;
+        }
+        .modern-input:focus {
+            background-color: #FFFFFF;
+            border-color: #0D9488;
+            box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15);
+        }
+        .section-tag {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            color: #0D9488;
+        }
+    </style>
+</head>
+<body>
+    <div class="register-card p-4 p-sm-5">
+        
+        <!-- Header / Branding -->
+        <div class="d-flex align-items-center gap-3 mb-4 pb-3 border-bottom">
+            <img src="{% static 'img/peso_masbate_logo.jpg' %}" alt="PESO Masbate Official Seal" class="rounded-circle shadow-sm border border-2 border-white" style="width: 60px; height: 60px; object-fit: contain; background-color: #FFFFFF;">
+            <div>
+                <h4 class="fw-bold text-navy mb-0">Create PESO Account</h4>
+                <div class="text-muted small">Provincial &amp; Municipal Staff Portal Registration</div>
+            </div>
+            <a href="{% url 'login' %}" class="btn btn-sm btn-light border ms-auto px-3 py-1 text-secondary rounded-pill fw-semibold" style="font-size: 0.78rem;">
+                <i class="bi bi-box-arrow-in-left me-1"></i>Back to Login
+            </a>
+        </div>
+
+        <!-- Admin Approval Notification Banner -->
+        <div class="alert alert-info py-2 px-3 rounded-3 small mb-4 border-info d-flex align-items-center gap-2" style="background-color: #F0FDF4; border-color: #BBF7D0; color: #166534;">
+            <i class="bi bi-shield-check fs-5 text-success flex-shrink-0"></i>
+            <div>
+                <strong>Pahintulot ng Provincial Admin:</strong> Matapos mag-rehistro, susuriin at aaprubahan ng Provincial PESO Admin ang iyong account bago ka makapasok sa database system.
+            </div>
+        </div>
+
+        {% if form.errors %}
+        <div class="alert alert-danger py-2 px-3 rounded-3 small mb-4 shadow-sm" role="alert">
+            <div class="fw-bold mb-1"><i class="bi bi-exclamation-triangle-fill me-1"></i>Pakitama ang sumusunod na mga field:</div>
+            <ul class="mb-0 ps-3">
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        <li><strong>{{ field.label }}:</strong> {{ error }}</li>
+                    {% endfor %}
+                {% endfor %}
+                {% for error in form.non_field_errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        <!-- Registration Form -->
+        <form method="post" action="{% url 'register' %}" novalidate>
+            {% csrf_token %}
+
+            <!-- Section 1: Personal Details -->
+            <div class="mb-4">
+                <div class="section-tag mb-2">1. Personal &amp; Contact Details</div>
+                <div class="row g-3">
+                    <div class="col-sm-6">
+                        <label for="{{ form.first_name.id_for_label }}" class="form-label small fw-semibold text-secondary mb-1">First Name <span class="text-danger">*</span></label>
+                        {{ form.first_name }}
+                    </div>
+                    <div class="col-sm-6">
+                        <label for="{{ form.last_name.id_for_label }}" class="form-label small fw-semibold text-secondary mb-1">Last Name <span class="text-danger">*</span></label>
+                        {{ form.last_name }}
+                    </div>
+                    <div class="col-sm-6">
+                        <label for="{{ form.email.id_for_label }}" class="form-label small fw-semibold text-secondary mb-1">Official Email Address <span class="text-danger">*</span></label>
+                        {{ form.email }}
+                    </div>
+                    <div class="col-sm-6">
+                        <label for="{{ form.contact_no.id_for_label }}" class="form-label small fw-semibold text-secondary mb-1">Contact / Mobile No.</label>
+                        {{ form.contact_no }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 2: Role & Office Assignment -->
+            <div class="mb-4">
+                <div class="section-tag mb-2">2. Role &amp; Municipal Assignment</div>
+                <div class="row g-3">
+                    <div class="col-sm-6">
+                        <label for="{{ form.role.id_for_label }}" class="form-label small fw-semibold text-secondary mb-1">Account Role / Designation <span class="text-danger">*</span></label>
+                        {{ form.role }}
+                        <div class="form-text small" style="font-size: 0.72rem;">Piliin kung ikaw ay Municipal Encoder o Provincial Staff.</div>
+                    </div>
+                    <div class="col-sm-6" id="peso_office_container">
+                        <label for="{{ form.peso_office.id_for_label }}" class="form-label small fw-semibold text-secondary mb-1">Designated PESO Office <span class="text-danger" id="office_required_star">*</span></label>
+                        {{ form.peso_office }}
+                        <div class="form-text small" style="font-size: 0.72rem;">Munisipyo o Lungsod kung saan ka nakatalaga.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 3: Credentials -->
+            <div class="mb-4">
+                <div class="section-tag mb-2">3. Portal Security Credentials</div>
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label for="{{ form.username.id_for_label }}" class="form-label small fw-semibold text-secondary mb-1">Desired Username <span class="text-danger">*</span></label>
+                        {{ form.username }}
+                        <div class="form-text small" style="font-size: 0.72rem;">Ito ang gagamitin mo sa pag-login (hal. jdelacruz).</div>
+                    </div>
+                    <div class="col-sm-6">
+                        <label for="{{ form.password.id_for_label }}" class="form-label small fw-semibold text-secondary mb-1">Password <span class="text-danger">*</span></label>
+                        {{ form.password }}
+                    </div>
+                    <div class="col-sm-6">
+                        <label for="{{ form.confirm_password.id_for_label }}" class="form-label small fw-semibold text-secondary mb-1">Confirm Password <span class="text-danger">*</span></label>
+                        {{ form.confirm_password }}
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-navy w-100 shadow-sm py-2 fs-6">
+                <i class="bi bi-person-check-fill me-1"></i>Submit Registration for Approval
+            </button>
+        </form>
+
+        <div class="text-center mt-4 pt-2 border-top">
+            <span class="text-muted small">Already have an approved account?</span>
+            <a href="{% url 'login' %}" class="fw-bold text-navy text-decoration-none small ms-1">Sign In here</a>
+        </div>
+    </div>
+
+    <script>
+        // Toggle Office Requirement based on Role selection
+        document.addEventListener('DOMContentLoaded', function() {
+            const roleSelect = document.getElementById('id_role');
+            const officeContainer = document.getElementById('peso_office_container');
+            const officeSelect = document.getElementById('id_peso_office');
+            const star = document.getElementById('office_required_star');
+
+            function updateOfficeRequirement() {
+                if (roleSelect && roleSelect.value === 'PROVINCIAL_ADMIN') {
+                    if (star) star.style.display = 'none';
+                    if (officeSelect) officeSelect.required = false;
+                } else {
+                    if (star) star.style.display = 'inline';
+                    if (officeSelect) officeSelect.required = true;
+                }
+            }
+
+            if (roleSelect) {
+                roleSelect.addEventListener('change', updateOfficeRequirement);
+                updateOfficeRequirement();
+            }
+        });
+    </script>
+</body>
+</html>

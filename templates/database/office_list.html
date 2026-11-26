@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block page_title %}PESO Offices Master List{% endblock %}
+{% block page_subtitle %}Directory of the 22 Provincial, City, and Municipal PESO Offices Across Masbate{% endblock %}
+
+{% block content %}
+<div class="row g-3">
+    {% for off in offices %}
+    <div class="col-12 col-md-6 col-xl-4">
+        <div class="card h-100 p-3 p-lg-4 border-0 shadow-sm hover-shadow">
+            <div class="d-flex align-items-center justify-content-between mb-2">
+                <span class="badge {% if off.lgu_type == 'Province' %}bg-navy text-white{% elif off.lgu_type == 'City' %}bg-primary text-white{% else %}bg-light text-navy border{% endif %}">
+                    {{ off.lgu_type }}
+                </span>
+                <span class="badge bg-success-subtle text-success border border-success-subtle">{{ off.status }}</span>
+            </div>
+            <h5 class="fw-bold text-navy mb-1">{{ off.name }}</h5>
+            <p class="text-muted small mb-3">
+                <i class="bi bi-geo-alt me-1 text-secondary"></i>{{ off.address|default:"Municipal Hall, Masbate" }}
+            </p>
+
+            <div class="bg-light rounded-3 p-2 mb-3" style="font-size: 0.78rem;">
+                <div class="d-flex justify-content-between py-1 border-bottom">
+                    <span class="text-muted">Head / Manager:</span>
+                    <span class="fw-semibold text-navy">{{ off.head|default:"PESO Focal Person" }}</span>
+                </div>
+                <div class="d-flex justify-content-between py-1 border-bottom">
+                    <span class="text-muted">Contact:</span>
+                    <span class="fw-semibold text-navy">{{ off.contact_no|default:"(056) Local PESO" }}</span>
+                </div>
+                <div class="d-flex justify-content-between py-1">
+                    <span class="text-muted">Registered Jobseekers:</span>
+                    <span class="badge bg-primary-subtle text-primary">{{ off.jobseekers.count }}</span>
+                </div>
+            </div>
+
+            <div class="mt-auto d-flex justify-content-between align-items-center pt-2 border-top">
+                <small class="text-muted" style="font-size: 0.7rem;">Code: {{ off.office_id }}</small>
+                <a href="{% url 'database:dashboard' %}?office={{ off.id }}" class="btn btn-sm btn-outline-primary py-0 px-2" style="font-size: 0.75rem;">
+                    Filter Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
