@@ -6,11 +6,14 @@ import os
 import sys
 
 # Add project root to Python path so Django can find settings and apps
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if BASE_DIR not in sys.path:
+    sys.path.insert(0, BASE_DIR)
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'peso_project.settings')
 
 from django.core.wsgi import get_wsgi_application
 
-# This 'app' variable is what Vercel looks for
-app = get_wsgi_application()
+# Expose both 'app' and 'application' for Vercel Python runtime compatibility
+application = get_wsgi_application()
+app = application
