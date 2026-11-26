@@ -15,9 +15,11 @@ __pycache__/
 db.sqlite3
 db.sqlite3-journal
 
-# Staticfiles collected & media uploads
-staticfiles/
+# Media uploads (user-uploaded files)
 media/
+
+# NOTE: staticfiles/ is intentionally NOT ignored.
+# Vercel needs it to serve CSS/JS in production.
 
 # OS specific files
 .DS_Store
